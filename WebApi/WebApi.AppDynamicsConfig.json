@@ -1,0 +1,13 @@
+{
+  "controller": {
+    "host": "#{AppDHost}",
+    "port": 443,
+    "account": "#{AppDAccount}",
+    "password": "#{AppDPassword}",
+    "ssl": true
+  },
+  "application": 
+  {
+    "name": "Kiosk"    
+  }
+}
