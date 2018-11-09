@@ -44,29 +44,13 @@ selected as the Startup Project. Make sure that build configuration is set to
 
 Simply Run or Debug the Project.
 
-## Run without SF
-
-The two services can also be run without deploying to SF.
-
-Additional configuration needs to be done in VS.
-
-Open the Project Properties for both the `WebApi` and `WorkerService` projects and
-make sure that `--noSF` is added under `Debug->Application Arguments`
-
-Also make sure that the Environment Variables for the Profiler is added.
-The Environment Variables should be the same as configured in the `ServiceManifest.xml`.
-
-![](Docs/DebugSettings.png)
-
-Finally set both `WebApi` and `WorkerService` as Startup Projects and Run or Debug the solution.
-
 ## Log Files
 
 NLog will output log files to: `c:\Logs`. This can be configured in `NLog.config`
 
 ## Invoking the API
 
-Open a browser: <http://localhost:5000/api/values/1>
+Open a browser: <http://localhost:8350/api/values/1>
 
 This will send a Request Message from `WebApi` to `WorkerService`.
 The `WorkerService` will then send a response message back containing a random value.

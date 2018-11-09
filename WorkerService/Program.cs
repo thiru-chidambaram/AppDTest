@@ -18,7 +18,7 @@ namespace WorkerService
         /// <summary>
         /// This is the entry point of the service host process.
         /// </summary>
-        private static void Main(string[] args)
+        private static void Main()
         {
             try
             {
@@ -34,24 +34,10 @@ namespace WorkerService
                     Password = "admin"
                 };
 
-                //To run the Service without Service Fabric, run from a console and add the args: --noSF
-                if (args.Any(s => s.Contains("--noSF")))
-                {
-                    var rabbitMqHost = BusFactory.CreateUsingRabbitMq(rabbitMqSettings);
-                    rabbitMqHost.StartBus();
+                ServiceRuntime.RegisterServiceAsync("WorkerServiceType",
+                    context => new WorkerService(context, rabbitMqSettings)).GetAwaiter().GetResult();
 
-                    var listener = new MassTransitEndpointListener<Consumer>(rabbitMqHost.Host, new Consumer(),
-                        Constants.ServiceQueue, autoDelete: false);
-                    listener.OpenAsync(CancellationToken.None).GetAwaiter().GetResult();
-                }
-                else
-                {
-                    ServiceRuntime.RegisterServiceAsync("WorkerServiceType",
-                        context => new WorkerService(context, rabbitMqSettings)).GetAwaiter().GetResult();
-
-                    ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(WorkerService).Name);
-
-                }
+                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(WorkerService).Name);
 
                 // Prevents this host process from terminating so services keep running.
                 Thread.Sleep(Timeout.Infinite);

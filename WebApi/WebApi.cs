@@ -43,30 +43,21 @@ namespace WebApi
                     new KestrelCommunicationListener(serviceContext, "ServiceEndpoint", (url, listener) =>
                     {
                         ServiceEventSource.Current.ServiceMessage(serviceContext, $"Starting Kestrel on {url}");
-                        return CreateHost(_rabbitMqHost, url, serviceContext, listener);
 
-
+                        return new WebHostBuilder()
+                            .UseKestrel()
+                            .ConfigureServices(services =>
+                            {
+                                services.AddSingleton(serviceContext);
+                                services.AddSingleton(_rabbitMqHost);
+                            })
+                            .UseContentRoot(Directory.GetCurrentDirectory())
+                            .UseStartup<Startup>()
+                            .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
+                            .UseUrls(url)
+                            .Build();
                     }))
             };
-        }
-
-        public static IWebHost CreateHost(BusHost rabbitMqHost,
-            string url = null, StatelessServiceContext context = null,
-            AspNetCoreCommunicationListener listener = null)
-        {
-            var builder = new WebHostBuilder()
-                .UseKestrel()
-                .ConfigureServices(
-                    services =>
-                    {
-                        if (context != null) services.AddSingleton(context);
-                        services.AddSingleton(rabbitMqHost);
-                    })
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>();
-            if (listener != null) builder.UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None);
-            if (url != null) builder.UseUrls(url);
-            return builder.Build();
         }
 
         protected override async Task OnCloseAsync(CancellationToken cancellationToken)

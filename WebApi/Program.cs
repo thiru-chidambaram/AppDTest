@@ -15,7 +15,7 @@ namespace WebApi
         /// <summary>
         /// This is the entry point of the service host process.
         /// </summary>
-        private static void Main(string[] args)
+        private static void Main()
         {
             try
             {
@@ -31,21 +31,10 @@ namespace WebApi
                     Password = "admin"
                 };
 
-                if (args.Any(s => s.Contains("--noSF")))
-                {
-                    var rabbitMqHost = BusFactory.CreateUsingRabbitMq(rabbitMqSettings);
-                    rabbitMqHost.StartBus();
+                ServiceRuntime.RegisterServiceAsync("WebApiType",
+                    context => new WebApi(context, rabbitMqSettings)).GetAwaiter().GetResult();
 
-                    var host = WebApi.CreateHost(rabbitMqHost);
-                    host.Start();
-                }
-                else
-                {
-                    ServiceRuntime.RegisterServiceAsync("WebApiType",
-                        context => new WebApi(context, rabbitMqSettings)).GetAwaiter().GetResult();
-
-                    ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(WebApi).Name);
-                }
+                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(WebApi).Name);
 
                 // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);

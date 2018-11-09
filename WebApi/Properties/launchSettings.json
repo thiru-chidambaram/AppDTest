@@ -11,14 +11,10 @@
   "profiles": {
     "WebApi": {
       "commandName": "Project",
-      "commandLineArgs": "--noSF",
       "launchBrowser": true,
       "launchUrl": "api/values/1",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "COR_ENABLE_PROFILING": "1",
-        "COR_PROFILER": "{39AEABC1-56A5-405F-B8E7-C3668490DB4A}",
-        "COR_PROFILER_PATH": "C:/AppDynamics/sf/tools/AppDynamics.Profiler_x64.dll"
+        "COR_ENABLE_PROFILING": "1"
       },
       "applicationUrl": "http://localhost:5000"
     }
