@@ -1,9 +1,9 @@
 {
   "controller": {
-    "host": "#{AppDHost}",
+    "host": "icmtrial.saas.appdynamics.com",
     "port": 443,
-    "account": "#{AppDAccount}",
-    "password": "#{AppDPassword}",
+    "account": "icmtrial",
+    "password": "98p07magf3a8",
     "ssl": true
   },
   "application": 
